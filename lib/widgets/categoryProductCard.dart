@@ -12,7 +12,7 @@ class CategoryProductCard extends StatelessWidget {
     double discount1 = ((model.mrp.toDouble() - model.price.toDouble()) /
             model.mrp.toDouble()) *
         100.0;
-    int discount = discount1.toInt();
+    int discount = discount1.toInt().ceil();
     return Container(
       color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
