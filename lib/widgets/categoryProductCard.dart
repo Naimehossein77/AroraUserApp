@@ -9,10 +9,10 @@ class CategoryProductCard extends StatelessWidget {
   CategoryProductCard({this.model});
   @override
   Widget build(BuildContext context) {
-    double discount1 = ((model.mrp.toDouble() - model.price.toDouble()) /
-            model.mrp.toDouble()) *
-        100.0;
-    int discount = discount1.toInt().ceil();
+    // double discount1 = ((model.mrp.toDouble() - model.price.toDouble()) /
+    //         model.mrp.toDouble()) *
+    //     100.0;
+    // int discount = discount1.toInt().ceil();
     return Container(
       color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -181,7 +181,7 @@ class CategoryProductCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CustomText(
-                          text: '$discount%',
+                          text: '${model.discount}%',
                           size: 10,
                           color: Colors.white,
                         ),
