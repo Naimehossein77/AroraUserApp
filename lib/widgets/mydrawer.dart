@@ -30,10 +30,7 @@ class MyDrawer extends StatelessWidget {
                 EdgeInsets.only(top: 100.0, bottom: 10.0, left: 20, right: 10),
             decoration: new BoxDecoration(
               gradient: new LinearGradient(
-                colors: [
-                  Colors.deepOrangeAccent,
-                  Colors.deepOrange
-                ],
+                colors: [Colors.deepOrangeAccent, Colors.deepOrange],
                 begin: const FractionalOffset(0.0, 0.0),
                 end: const FractionalOffset(1.0, 0.0),
                 stops: [0.0, 1.0],
@@ -212,7 +209,8 @@ class MyDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Icon(
-                    Icons.search,
+                    Icons.contact_page,
+
                     // color: Colors.white,
                   ),
                   title: Text(

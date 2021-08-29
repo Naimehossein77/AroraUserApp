@@ -140,91 +140,89 @@ class _CartPageState extends State<CartPage> {
             centerTitle: true,
           ),
           //drawer: MyDrawer(),
-          body: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  child: Consumer<TotalAmount>(
-                    builder: (context, amountProvider, c) {
-                      return Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Center(
-                          child:
-                              //cartProvider.count == 0
-                              amountProvider.totalAmount == 0
-                                  ? Container()
-                                  : Text(
-                                      "Total Price: ₹${amountProvider.totalAmount.toString()}",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                        ),
-                      );
-                    },
-                  ),
+          body: ListView(
+            children: [
+              Container(
+                child: Consumer<TotalAmount>(
+                  builder: (context, amountProvider, c) {
+                    return Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(
+                        child:
+                            //cartProvider.count == 0
+                            amountProvider.totalAmount == 0
+                                ? Container()
+                                : Text(
+                                    "Total Price: ₹${amountProvider.totalAmount.toString()}",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                      ),
+                    );
+                  },
                 ),
-                Container(
-                    child: Container(
-                  child: (boxList != null && boxList.length != 0)
-                      ? StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('products')
-                              .where(EcommerceApp.productID, whereIn: boxList)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            print('snapshot size');
-                            // log(boxList.toString());
-                            // log(EcommerceApp.productID);
-                            // log(snapshot.data.docs.length.toString());
-                            return !snapshot.hasData
-                                ? Container(
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  )
-                                : snapshot.data.docs.length == 0 &&
-                                        snapshot.hasData
-                                    ? beginBuildingCart()
-                                    : Container(
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: (snapshot.hasData)
-                                              ? snapshot.data.docs.length
-                                              : 0,
-                                          itemBuilder: (context, index) {
-                                            ItemModel model =
-                                                ItemModel.fromJson(snapshot
-                                                    .data.docs[index]
-                                                    .data());
-                                            int ii;
-                                            for (int i = 0;
-                                                i < boxList.length;
-                                                i++) {
-                                              if (boxList[i] == model.pid)
-                                                ii = i;
-                                            }
-                                            print('iiiii' + ii.toString());
-                                            if (ii == null) {
-                                              return Container();
-                                            }
-                                            return sourceInfoCart(
-                                              index,
-                                              ii,
-                                              model,
-                                              context,
-                                            );
-                                          },
-                                        ),
-                                      );
-                          },
-                        )
-                      : beginBuildingCart(),
-                )),
-              ],
-            ),
+              ),
+              Container(
+                  child: Container(
+                child: (boxList != null && boxList.length != 0)
+                    ? StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('products')
+                            .where(EcommerceApp.productID, whereIn: boxList)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          print('snapshot size');
+                          // log(boxList.toString());
+                          // log(EcommerceApp.productID);
+                          // log(snapshot.data.docs.length.toString());
+                          return !snapshot.hasData
+                              ? Container(
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                )
+                              : snapshot.data.docs.length == 0 &&
+                                      snapshot.hasData
+                                  ? beginBuildingCart()
+                                  : Container(
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: (snapshot.hasData)
+                                            ? snapshot.data.docs.length
+                                            : 0,
+                                        itemBuilder: (context, index) {
+                                          ItemModel model = ItemModel.fromJson(
+                                              snapshot.data.docs[index].data());
+                                          int ii;
+                                          for (int i = 0;
+                                              i < boxList.length;
+                                              i++) {
+                                            if (boxList[i] == model.pid) ii = i;
+                                          }
+                                          print('iiiii' + ii.toString());
+                                          if (ii == null) {
+                                            return Container();
+                                          }
+                                          return sourceInfoCart(
+                                            index,
+                                            ii,
+                                            model,
+                                            context,
+                                          );
+                                        },
+                                      ),
+                                    );
+                        },
+                      )
+                    : beginBuildingCart(),
+              )),
+              SizedBox(
+                height: 100,
+              )
+            ],
           ),
         ),
       ),

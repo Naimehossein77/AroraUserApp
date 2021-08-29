@@ -178,9 +178,23 @@ class _ProductPageState extends State<ProductPage> {
                             SizedBox(
                               height: 10.0,
                             ),
-                            Text(
-                              "Mrp : ₹" + widget.itemModel.mrp.toString(),
-                              style: TextStyle(color: Colors.grey),
+                            // Text(
+                            //   "Mrp : ₹" + widget.itemModel.mrp.toString(),
+                            //   style: TextStyle(color: Colors.grey),
+                            // ),
+                            RichText(
+                              text: new TextSpan(
+                                children: <TextSpan>[
+                                  new TextSpan(
+                                    text: 'MRP: ₹${widget.itemModel.mrp}',
+                                    style: new TextStyle(
+                                      color: Colors.grey[500],
+                                      fontSize: 11,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(
                               height: 10.0,

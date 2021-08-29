@@ -13,6 +13,7 @@ class CategoryProductCard extends StatelessWidget {
     //         model.mrp.toDouble()) *
     //     100.0;
     // int discount = discount1.toInt().ceil();
+    final size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -21,15 +22,15 @@ class CategoryProductCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, top: 8),
+            padding: const EdgeInsets.only(left: 0.0, top: 0),
             child: Stack(
               children: [
                 Container(
                   decoration: BoxDecoration(
                       color: Colors.grey[100],
                       borderRadius: BorderRadius.circular(5)),
-                  height: 230,
-                  width: 140,
+                  height: 250,
+                  width: size.width * .48,
                   child: InkWell(
                     onTap: () {
                       Route route = MaterialPageRoute(
@@ -47,7 +48,7 @@ class CategoryProductCard extends StatelessWidget {
                           child: Image.network(
                             model.thumbnailUrl[0],
                             height: 150,
-                            width: 140,
+                            width: size.width * .48,
                             fit: BoxFit.fill,
                           ),
                         ),
@@ -59,13 +60,22 @@ class CategoryProductCard extends StatelessWidget {
                               width: 5,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 5.0, top: 8),
-                              child: CustomText(
+                              padding: const EdgeInsets.only(
+                                  left: 5.0, right: 5, top: 8),
+                              child: Text(
+                                model.title,
                                 overflow: TextOverflow.ellipsis,
-                                text: model.title,
-                                size: 15,
-                                fontWeight: FontWeight.w600,
+                                maxLines: 2,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                ),
                               ),
+                              // child: CustomText(
+                              //   overflow: TextOverflow.ellipsis,
+                              //   text: model.title,
+                              //   size: 15,
+                              //   fontWeight: FontWeight.w600,
+                              // ),
                             ),
                             // RichText(
                             //   text: new TextSpan(

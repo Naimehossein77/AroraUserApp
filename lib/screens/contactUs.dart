@@ -59,7 +59,7 @@ class ContactUs extends StatelessWidget {
                         onPressed: () async {
                           final link = WhatsAppUnilink(
                             phoneNumber: '+919310949504',
-                            text: "Hey Manish! Are you availabe to chat?",
+                            text: "",
                           );
                           // Convert the WhatsAppUnilink instance to a string.
                           // Use either Dart's string interpolation or the toString() method.

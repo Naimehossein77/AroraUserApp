@@ -36,6 +36,7 @@ class _StoreHomeState extends State<StoreHome> {
   List<Widget> imageSliders = [];
   bool isShimmerOnImageBanner = true;
   List<Image> images;
+  bool isLoading = true;
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   void initState() {
     super.initState();
@@ -60,6 +61,8 @@ class _StoreHomeState extends State<StoreHome> {
       Provider.of<ImageBannerProvider>(context, listen: false).notify(true);
     } else {
       isShimmerOnImageBanner = false;
+      isLoading = false;
+      setState(() {});
       images = bannerImage
           .map((e) => Image.network(
                 e,
@@ -172,96 +175,104 @@ class _StoreHomeState extends State<StoreHome> {
       ),
       drawer: MyDrawer(),
       body: SingleChildScrollView(
-        child: ListView(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          children: [
-            //SearchBox
-            Padding(
-              padding: const EdgeInsets.only(top: 0.0),
-              child: GestureDetector(
-                onTap: () {
-                  Route route =
-                      MaterialPageRoute(builder: (c) => SearchProduct());
-                  Navigator.push(context, route);
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 5.0),
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      border: Border.all(
-                        color: Colors.grey[200],
-                        width: 1,
-                        style: BorderStyle.solid,
+        child: isLoading
+            ? Container(
+                padding: EdgeInsets.only(top: 200),
+                child: Center(child: CircularProgressIndicator()))
+            : ListView(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                children: [
+                  //SearchBox
+                  Padding(
+                    padding: const EdgeInsets.only(top: 0.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Route route =
+                            MaterialPageRoute(builder: (c) => SearchProduct());
+                        Navigator.push(context, route);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 5.0),
+                        alignment: Alignment.centerLeft,
+                        decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            border: Border.all(
+                              color: Colors.grey[200],
+                              width: 1,
+                              style: BorderStyle.solid,
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0))),
+                        width: double.infinity,
+                        height: 37,
+                        margin: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.search,
+                                  size: 20,
+                                  color: Colors.grey[500],
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Search Here',
+                                  style: TextStyle(
+                                      color: Colors.grey[500], fontSize: 14.0),
+                                ),
+                              ],
+                            ),
+                            Icon(
+                              Icons.camera_alt_outlined,
+                              size: 19,
+                              color: Colors.grey[400],
+                            ),
+                          ],
+                        ),
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  width: double.infinity,
-                  height: 37,
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.search,
-                            size: 20,
-                            color: Colors.grey[500],
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            'Search Here',
-                            style: TextStyle(
-                                color: Colors.grey[500], fontSize: 14.0),
-                          ),
-                        ],
-                      ),
-                      Icon(
-                        Icons.camera_alt_outlined,
-                        size: 19,
-                        color: Colors.grey[400],
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ),
-            // SearchBox(),
-            Consumer<ImageBannerProvider>(builder: (_, snapshot, c) {
-              return snapshot.isShimmer || bannerImage == null
-                  ? ImageBannerShimmer()
-                  : BannerImage(
-                      imgList: bannerImage,
-                      images: images,
-                    );
-            }),
+                  // SearchBox(),
+                  Consumer<ImageBannerProvider>(builder: (_, snapshot, c) {
+                    return snapshot.isShimmer || bannerImage == null
+                        ? ImageBannerShimmer()
+                        : BannerImage(
+                            imgList: bannerImage,
+                            images: images,
+                          );
+                  }),
 
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, top: 10, bottom: 10),
-              child: CustomText(
-                text: 'Category',
-                size: 18,
-                color: Colors.blueGrey[700],
-                fontWeight: FontWeight.bold,
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 8.0, top: 10, bottom: 10),
+                    child: CustomText(
+                      text: 'Category',
+                      size: 18,
+                      color: Colors.blueGrey[700],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  CategoryHorizontalList(),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 8.0, top: 20, bottom: 10),
+                    child: CustomText(
+                      text: 'Featured Products',
+                      size: 18,
+                      color: Colors.blueGrey[700],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  ProductsList(),
+                ],
               ),
-            ),
-            CategoryHorizontalList(),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, top: 20, bottom: 10),
-              child: CustomText(
-                text: 'Featured Products',
-                size: 18,
-                color: Colors.blueGrey[700],
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            ProductsList(),
-          ],
-        ),
       ),
     );
   }

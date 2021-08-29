@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:user/Config/config.dart';
@@ -5,16 +7,45 @@ import 'package:user/Widgets/customAppBar.dart';
 import 'package:user/model/address.dart';
 import 'package:user/screens/home.dart';
 
-class AddAddress extends StatelessWidget {
-  final formKey = GlobalKey<FormState>();
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-  final cName = TextEditingController();
-  final cPhoneNumber = TextEditingController();
-  final cFlatHomeNumber = TextEditingController();
-  final cCity = TextEditingController();
-  final cState = TextEditingController();
-  final cPinCode = TextEditingController();
+class AddAddress extends StatefulWidget {
   @override
+  AddressModel model;
+  AddAddress({this.model});
+
+  @override
+  _AddAddressState createState() => _AddAddressState();
+}
+
+class _AddAddressState extends State<AddAddress> {
+  final formKey = GlobalKey<FormState>();
+
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final cName = TextEditingController();
+
+  final cPhoneNumber = TextEditingController();
+
+  final cFlatHomeNumber = TextEditingController();
+
+  final cCity = TextEditingController();
+
+  final cState = TextEditingController();
+
+  final cPinCode = TextEditingController();
+
+  void initState() {
+    if (widget.model != null) {
+      cName.text = widget.model.name;
+      cPhoneNumber.text = widget.model.phoneNumber;
+      cFlatHomeNumber.text = widget.model.flatNumber;
+      cCity.text = widget.model.city;
+      cState.text = widget.model.state;
+      cPinCode.text = widget.model.pincode;
+    }
+
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -22,34 +53,56 @@ class AddAddress extends StatelessWidget {
         appBar: MyAppBar(),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
+            final String docNameWithTime =
+                DateTime.now().millisecondsSinceEpoch.toString();
             if (formKey.currentState.validate()) {
               final model = AddressModel(
                 name: cName.text.trim(),
                 state: cState.text.trim(),
                 pincode: cPinCode.text,
-                phoneNumber: cPhoneNumber.text,
-                flatNumber: cFlatHomeNumber.text,
+                phoneNumber: cPhoneNumber.text.trim(),
+                flatNumber: cFlatHomeNumber.text.trim(),
                 city: cCity.text.trim(),
+                addressDocID: (widget.model == null)
+                    ? docNameWithTime.trim()
+                    : widget.model.addressDocID.trim(),
               ).toJson();
 
               //ADD TO FIRESTORE
-              EcommerceApp.firestore
-                  .collection(EcommerceApp.collectionUser)
-                  .doc(EcommerceApp.sharedPreferences
-                      .getString(EcommerceApp.userUID))
-                  .collection(EcommerceApp.subCollectionAddress)
-                  .doc(DateTime.now().millisecondsSinceEpoch.toString())
-                  .set(model)
-                  .then((value) {
-                final snack =
-                    SnackBar(content: Text("New Address Added Successfully"));
-                scaffoldKey.currentState.showSnackBar(snack);
-                FocusScope.of(context).requestFocus(FocusNode());
-                formKey.currentState.reset();
-              });
+              if (widget.model == null) {
+                EcommerceApp.firestore
+                    .collection(EcommerceApp.collectionUser)
+                    .doc(EcommerceApp.sharedPreferences
+                        .getString(EcommerceApp.userUID))
+                    .collection(EcommerceApp.subCollectionAddress)
+                    .doc(docNameWithTime.trim())
+                    .set(model)
+                    .then((value) {
+                  final snack =
+                      SnackBar(content: Text("New Address Added Successfully"));
+                  scaffoldKey.currentState.showSnackBar(snack);
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  formKey.currentState.reset();
+                });
+              } else {
+                log(widget.model.addressDocID);
+                EcommerceApp.firestore
+                    .collection(EcommerceApp.collectionUser)
+                    .doc(EcommerceApp.sharedPreferences
+                        .getString(EcommerceApp.userUID))
+                    .collection(EcommerceApp.subCollectionAddress)
+                    .doc(widget.model.addressDocID.trim())
+                    .set(model)
+                    .then((value) {
+                  final snack =
+                      SnackBar(content: Text("Address Updated Successfully"));
+                  scaffoldKey.currentState.showSnackBar(snack);
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  formKey.currentState.reset();
+                });
+              }
 
-              Route route = MaterialPageRoute(builder: (c) => StoreHome());
-              Navigator.pushReplacement(context, route);
+              Navigator.pop(context);
             }
           },
           label: Text("Done"),

@@ -12,7 +12,7 @@ import 'package:user/Counters/cartwidgetProvider.dart';
 import 'package:user/Counters/changeAddresss.dart';
 import 'package:user/Counters/totalMoney.dart';
 import 'package:user/screens/home.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart'; 
 
 import 'package:user/screens/login.dart';
 
